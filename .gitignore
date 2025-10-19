@@ -31,3 +31,8 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Uploads ###
+uploads/images/
+uploads/videos/
+uploads/others/
