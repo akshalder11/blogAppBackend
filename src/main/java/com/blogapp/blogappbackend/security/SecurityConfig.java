@@ -1,5 +1,6 @@
-package com.blogapp.blogappbackend.utilities;
+package com.blogapp.blogappbackend.security;
 
+import com.blogapp.blogappbackend.utilities.JwtFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,6 +21,7 @@ public class SecurityConfig {
         http.csrf().disable()
                 .authorizeHttpRequests()
                 .requestMatchers(
+                        "/api/health",
                         "/api/users/loginUser",
                         "/api/users/registerUser"
                 ).permitAll()
