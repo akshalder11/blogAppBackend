@@ -4,7 +4,6 @@ import com.blogapp.blogappbackend.utilities.JwtFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
@@ -23,7 +22,10 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf().disable()
+        http
+                // Enabled CORS first
+                .cors().and()
+                .csrf().disable()
                 .authorizeHttpRequests()
                 .requestMatchers(
                         "/api/health",
@@ -42,13 +44,10 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-
-        // ✅ Change this to match your frontend domain (e.g., your Render or localhost frontend)
         config.setAllowedOrigins(List.of(
-                "http://localhost:5173" // local Vite dev
-                // "https://your-frontend-domain.onrender.com" // deployed frontend
+                "http://localhost:5173" // local frontend
+                // "https://your-frontend-domain.onrender.com" // deployed frontend (add this later)
         ));
-
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
         config.setAllowCredentials(true);
