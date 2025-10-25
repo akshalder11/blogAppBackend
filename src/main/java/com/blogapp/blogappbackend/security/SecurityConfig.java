@@ -45,7 +45,8 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(List.of(
-                "http://localhost:5173" // local frontend
+                "http://localhost:5173", // local frontend
+                "http://192.168.1.10:5173" // local ip
                 // "https://your-frontend-domain.onrender.com" // deployed frontend (add this later)
         ));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
