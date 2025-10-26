@@ -30,7 +30,8 @@ public class SecurityConfig {
                 .requestMatchers(
                         "/api/health",
                         "/api/users/loginUser",
-                        "/api/users/registerUser"
+                        "/api/users/registerUser",
+                        "/api/posts/allPost"
                 ).permitAll()
                 .anyRequest().authenticated()
                 .and()
