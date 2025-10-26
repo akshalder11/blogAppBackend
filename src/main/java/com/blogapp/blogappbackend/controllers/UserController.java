@@ -39,7 +39,9 @@ public class UserController {
         if (loginUser.isPresent() && passwordEncoder.matches(userBody.getPassword(), loginUser.get().getPassword())) {
             String jwtToken = jwtUtil.generateToken(loginUser.get().getUsername(), loginUser.get().getId());
             return ResponseEntity.ok().body(Map.of(
+                    "id", loginUser.get().getId(),
                     "username", loginUser.get().getUsername(),
+                    "email", loginUser.get().getEmail(),
                     "jwtToken", jwtToken
             ));
         } else
