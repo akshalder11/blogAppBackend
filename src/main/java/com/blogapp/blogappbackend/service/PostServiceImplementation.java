@@ -1,6 +1,7 @@
 package com.blogapp.blogappbackend.service;
 
 import com.blogapp.blogappbackend.entity.Post;
+import com.blogapp.blogappbackend.entity.PostReaction;
 import com.blogapp.blogappbackend.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -12,14 +13,30 @@ import java.util.List;
 public class PostServiceImplementation implements PostService {
 
     private final PostRepository postRepository;
+    private final PostReactionService postReactionService;
     @Override
     public Post createPost(Post post) {
+        post.setLikeCount(0);
+        post.setDislikeCount(0);
         return postRepository.save(post);
     }
 
     @Override
     public Post getPostById(Long postId) {
-        return postRepository.findById(postId).orElseThrow(()-> new RuntimeException("Post not found with ID " + postId));
+        Post post = postRepository.findById(postId).orElseThrow(() -> new RuntimeException("Post not found with ID " + postId));
+
+        // Get all reactions for the post
+        List<PostReaction> reactions = postReactionService.getReactionByPost(postId);
+        System.out.println("Reactions: " + reactions);
+        // Count likes and dislikes
+        long likes = reactions.stream().filter(r -> r.getReactionType() == PostReaction.ReactionType.LIKE).count();
+        long dislikes = reactions.stream().filter(r -> r.getReactionType() == PostReaction.ReactionType.DISLIKE).count();
+
+        // Update the post's reaction counts
+        post.setLikeCount((int)likes);
+        post.setDislikeCount((int)dislikes);
+
+        return postRepository.save(post);
     }
 
     @Override

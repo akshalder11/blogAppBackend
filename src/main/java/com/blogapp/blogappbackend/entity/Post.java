@@ -32,7 +32,7 @@ public class Post {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private MediaType mediaType; // enum: IMAGE, AUDIO, VIDEO, NONE
+    private MediaType mediaType; // enum: IMAGE, AUDIO, VIDEO, TEXT
 
     @Column
     private String mediaUrl;
@@ -60,6 +60,6 @@ public class Post {
     }
 
     public enum MediaType {
-        IMAGE, AUDIO, VIDEO, NONE
+        IMAGE, AUDIO, VIDEO, TEXT
     }
 }
