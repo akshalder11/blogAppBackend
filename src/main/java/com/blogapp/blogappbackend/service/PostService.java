@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface PostService {
     Post createPost(Post post);
-    Post getPostById(Long postId);
+    Post getPostById(Long postId, Long userId);
     List<Post> getAllPosts();
     Post updatePost(Post post, Long postId);
     void deletePost(Long postId);

@@ -44,7 +44,8 @@ public class PostController {
     public ResponseEntity<?> getPostById (@RequestBody Map<String, String> payload) {
         try {
             Long postId = Long.parseLong(payload.get("postId"));
-            Post post = postService.getPostById(postId);
+            Long userId = Long.parseLong(payload.get("userId"));
+            Post post = postService.getPostById(postId, userId);
             return ResponseEntity.ok(post);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));

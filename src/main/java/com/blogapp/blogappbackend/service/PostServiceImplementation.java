@@ -22,7 +22,7 @@ public class PostServiceImplementation implements PostService {
     }
 
     @Override
-    public Post getPostById(Long postId) {
+    public Post getPostById(Long postId, Long userId) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new RuntimeException("Post not found with ID " + postId));
 
         // Get all reactions for the post
@@ -35,6 +35,16 @@ public class PostServiceImplementation implements PostService {
         // Update the post's reaction counts
         post.setLikeCount((int)likes);
         post.setDislikeCount((int)dislikes);
+
+        boolean hasLiked = reactions.stream()
+                .anyMatch(r -> r.getUserId().equals(userId)
+                        && r.getReactionType() == PostReaction.ReactionType.LIKE);
+        post.setHasLikedByCurrentUser(hasLiked);
+
+        boolean hasDisLiked = reactions.stream()
+                .anyMatch(r -> r.getUserId().equals(userId)
+                        && r.getReactionType() == PostReaction.ReactionType.DISLIKE);
+        post.setHasDisLikedByCurrentUser(hasDisLiked);
 
         return postRepository.save(post);
     }

@@ -43,6 +43,12 @@ public class Post {
     @Column(nullable = false)
     private int dislikeCount;
 
+    @Transient
+    private Boolean hasLikedByCurrentUser;
+
+    @Transient
+    private Boolean hasDisLikedByCurrentUser;
+
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 

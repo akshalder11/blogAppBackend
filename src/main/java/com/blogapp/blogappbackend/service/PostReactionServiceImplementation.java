@@ -8,6 +8,7 @@ import com.blogapp.blogappbackend.repository.PostRepository;
 import com.blogapp.blogappbackend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -20,6 +21,7 @@ public class PostReactionServiceImplementation implements PostReactionService {
     private final UserRepository userRepository;
 
     @Override
+    @Transactional
     public PostReaction reactToPost(Long postId, Long userId, String reactionTypeString) {
         //Validate
         userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found with ID " + userId));
@@ -38,7 +40,7 @@ public class PostReactionServiceImplementation implements PostReactionService {
         }
 
         // Check if user already reacted or else add reaction
-        return postReactionRepository.findByUserIdAndPostId(userId, postId).map(
+        PostReaction reaction =  postReactionRepository.findByUserIdAndPostId(userId, postId).map(
             existingReaction -> {
                 existingReaction.setReactionType(reactionType);
                 return postReactionRepository.save(existingReaction);
@@ -50,6 +52,16 @@ public class PostReactionServiceImplementation implements PostReactionService {
                         .build();
                 return postReactionRepository.save(newReaction);
         });
+
+        // Update post reaction counts
+        long likes = postReactionRepository.countByPostIdAndReactionType(postId, ReactionType.LIKE);
+        long dislikes = postReactionRepository.countByPostIdAndReactionType(postId, ReactionType.DISLIKE);
+
+        post.setLikeCount((int) likes);
+        post.setDislikeCount((int) dislikes);
+        postRepository.save(post);
+
+        return reaction;
     }
 
     @Override

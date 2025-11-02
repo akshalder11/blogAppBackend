@@ -25,7 +25,7 @@ public class PostReactionController {
             Long userId = Long.parseLong(payload.get("userId"));
             String reactionType = payload.get("reactionType");
 
-            PostReaction reactPost = postReactionService.reactToPost(postId, userId, reactionType);
+            postReactionService.reactToPost(postId, userId, reactionType);
             return ResponseEntity.ok(Map.of("message", "React added to post successfully"));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
