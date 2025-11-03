@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/posts")
@@ -54,21 +55,24 @@ public class PostController {
 
     // UPDATE
     @PutMapping("/updatePost")
-    public ResponseEntity<?> updatePost (@RequestBody Map<String, String > payload) {
+    public ResponseEntity<?> updatePost (@RequestBody Map<String, Object > payload) {
         try {
             //Extract from payload
-            Long postId = Long.parseLong(payload.get("postId"));
-            String title = payload.get("title");
-            String content = payload.get("content");
-            String mediaTypeStr = payload.get("mediaType");
-            String mediaUrl = payload.get("mediaUrl");
+            Long postId = Long.parseLong(payload.get("postId").toString());
+            String title = payload.get("title").toString();
+            String content = payload.get("content").toString();
+            String mediaTypeStr = payload.get("mediaType").toString();
+            //String mediaUrls = payload.get("mediaUrls").toString();
+            List<String> mediaUrls = ((List<?>) payload.get("mediaUrls")).stream()
+                    .map(Object::toString)
+                    .collect(Collectors.toList());;
 
             //Set to buffer object
             Post updatedPost = new Post();
             updatedPost.setTitle(title);
             updatedPost.setContent(content);
             updatedPost.setMediaType(Post.MediaType.valueOf(mediaTypeStr));
-            updatedPost.setMediaUrl(mediaUrl);
+            updatedPost.setMediaUrls(mediaUrls);
 
             //Final update
             Post postToUpdate = postService.updatePost(updatedPost, postId);

@@ -31,7 +31,7 @@ public class MediaController {
     @PostMapping("/upload")
     public ResponseEntity<?> uploadFile (@RequestParam("file") List<MultipartFile> files) {
         List<String> fileUrls = mediaService.uploadFiles(files);
-        return ResponseEntity.ok().body(Map.of("mediaUrl", fileUrls));
+        return ResponseEntity.ok().body(Map.of("mediaUrls", fileUrls));
     }
 
     // FETCH MEDIA

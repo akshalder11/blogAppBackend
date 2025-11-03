@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "posts")
@@ -34,8 +36,10 @@ public class Post {
     @Column(nullable = false)
     private MediaType mediaType; // enum: IMAGE, AUDIO, VIDEO, TEXT
 
-    @Column
-    private String mediaUrl;
+    @ElementCollection
+    @CollectionTable(name = "post_media_urls", joinColumns = @JoinColumn(name = "post_id"))
+    @Column(name = "media_url")
+    private List<String> mediaUrls = new ArrayList<>();
 
     @Column(nullable = false)
     private int likeCount;

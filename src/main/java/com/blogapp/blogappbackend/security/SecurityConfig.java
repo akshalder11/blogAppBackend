@@ -23,20 +23,28 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                // Enabled CORS first
+                // Enable CORS and disable CSRF (for JWT stateless flow)
                 .cors().and()
                 .csrf().disable()
-                .authorizeHttpRequests()
-                .requestMatchers(
-                        "/api/health",
-                        "/api/users/loginUser",
-                        "/api/users/registerUser",
-                        "/api/posts/allPost"
-                ).permitAll()
-                .anyRequest().authenticated()
-                .and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
+                .authorizeHttpRequests(auth -> auth
+                        // Public endpoints
+                        .requestMatchers(
+                                "/api/health",
+                                "/api/users/loginUser",
+                                "/api/users/registerUser",
+                                "/api/posts/allPost",
+                                "/api/media/uploads/**"
+                        ).permitAll()
+
+                        // All other endpoints need JWT
+                        .anyRequest().authenticated()
+                )
+
+                // Stateless session for JWT
+                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+
+        // Add JWT filter
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
@@ -46,9 +54,9 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(List.of(
-                "http://localhost:5173", // local frontend
-                "http://192.168.1.10:5173", // local ip
-                "https://akshalder11-blogapp.netlify.app" // deployed frontend (add this later)
+                "http://localhost:5173",
+                "http://192.168.1.10:5173",
+                "https://akshalder11-blogapp.netlify.app"
         ));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("Authorization", "Content-Type"));

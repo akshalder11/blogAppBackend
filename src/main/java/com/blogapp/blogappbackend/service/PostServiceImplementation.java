@@ -6,6 +6,7 @@ import com.blogapp.blogappbackend.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -18,6 +19,11 @@ public class PostServiceImplementation implements PostService {
     public Post createPost(Post post) {
         post.setLikeCount(0);
         post.setDislikeCount(0);
+
+        if (post.getMediaUrls() == null) {
+            post.setMediaUrls(new ArrayList<>());
+        }
+
         return postRepository.save(post);
     }
 
@@ -67,7 +73,7 @@ public class PostServiceImplementation implements PostService {
         updatedPost.setTitle(post.getTitle());
         updatedPost.setContent(post.getContent());
         updatedPost.setMediaType(post.getMediaType());
-        updatedPost.setMediaUrl(post.getMediaUrl());
+        updatedPost.setMediaUrls(post.getMediaUrls());
         updatedPost.setUpdatedAt(java.time.LocalDateTime.now());
 
         return postRepository.save(updatedPost);
